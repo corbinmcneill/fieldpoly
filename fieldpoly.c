@@ -7,34 +7,33 @@ poly_t make_poly(int degree) {
     poly_t result;
     int i;
     for (i=0; i<degree+1; i++) {
-
-        //TODO fix
-        //result.coeffs[i] = () rand();
+        f_rand(result.coeffs[i]);
     }   
     return result;
 }
 
-poly_t make_poly_intercept(int degree, element_t intercept) {
+poly_t make_poly_intercept(int degree, element_t* intercept) {
     poly_t result;
     int i;
-    result.coeffs[0] = intercept;
+    *result.coeffs[0] = *intercept;
     for (i=1; i<degree+1; i++) {
-        //TODO: fix
-        //result.coeffs[i] = (uint8_t) rand();
+           f_rand(result.coeffs[i]);
     }   
     result.degree = degree;
     return result;
 }
 
-element_t eval_poly(poly_t poly, element_t x) {
-    // TODO see if this method works for all fields
-    element_t toReturn = f_mult_id(&x);
-    element_t workingX = f_add_id(&x);
-    int i;
-    for (i=0; i<= poly.degree; i++) {
-        element_t temp = f_mult(&workingX,&(poly.coeffs[i]) );
-        toReturn = f_add(&toReturn, &temp);
-        workingX = f_mult(&workingX,&x);
+element_t eval_poly(poly_t* poly, element_t* x) {
+    element_t toReturn = *x;
+    element_t workingX = *x;
+    f_mult_inv(&toReturn);    
+    f_mult_inv(&workingX);    
+    element_t temp;
+    for (int i=0; i<= poly->degree; i++) {
+        temp = workingX; 
+        f_mult(&temp,&(poly->coeffs[i]));
+        f_add(&toReturn, &temp);
+        f_mult(&workingX,x);
     }   
     return toReturn;
 }
@@ -46,11 +45,14 @@ poly_t interpolate(element_t* x, element_t *y, int n) {
     for (int i = 0; i < n; i++) {
         a[i] = y[i];
     }   
+    element_t temp1,temp2;
     for (int k = 1; k <= n; k++) {
         for (int j = n; j >= k; j--) { 
-            element_t temp1 = f_sub(&a[j],&a[j-1]);
-            element_t temp2 = f_sub(&x[j], &x[j-k]);
-            a[j] = f_div(&temp1,&temp2);
+            temp1 = a[j];
+            f_sub(&a[j],&a[j-1]);
+            temp2 = x[j];
+            f_sub(&temp2, &x[j-k]);
+            f_div(&a[j],&temp2);
         }
     }   
     
@@ -72,7 +74,7 @@ poly_t add_polys(poly_t *polya, poly_t *polyb) {
         
     int i;
     for (i = 0; i < smaller->degree+1; i++) {
-        result.coeffs[i] = f_add(&polya->coeffs[i], &polyb->coeffs[i]);
+        f_add(&polya->coeffs[i], &polyb->coeffs[i]);
     }
     for (; i < larger->degree+1; i++) {
         result.coeffs[i] = larger->coeffs[i];
@@ -82,5 +84,5 @@ poly_t add_polys(poly_t *polya, poly_t *polyb) {
 }
 
 // multiplies the two polynomials, caller must free the returned polynomial
-poly_t mult_polys(poly_t polya, poly_t polyb) {
+poly_t mult_polys(poly_t* polya, poly_t* polyb) {
 }
