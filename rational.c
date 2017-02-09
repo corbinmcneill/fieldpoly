@@ -7,7 +7,6 @@
 
 #define MAX 100
 
-field_ops_t rat_ops;
 char initialized = 0;
 
 void field_init();
@@ -68,23 +67,19 @@ void rat_randelement(element_t* result) {
     output->contents.num = rand() % MAX;
     output->contents.denom = (rand() % MAX) +1;
 }
+
+static field_ops_t rat_ops = {
+    .add = rat_add,
+    .mult = rat_mult,
+    .addinv = rat_add_inv,
+    .multinv = rat_mult_inv,
+    .addid = rat_add_id,
+    .multid = rat_mult_id,
+    .randelement = rat_randelement,
+};
     
 void rat_init(rat_element_t* a) {
-    field_init();
-    a->field = &rat_ops;
+    a->super.field = &rat_ops;
     a->contents.num = 0;
     a->contents.denom = 1;
 }
-void field_init() {
-    if (initialized)
-        return;
-    rat_ops.add = &rat_add;
-    rat_ops.mult = &rat_mult;
-    rat_ops.addinv = &rat_add_inv;
-    rat_ops.multinv = &rat_mult_inv;
-    rat_ops.addid = &rat_add_id;
-    rat_ops.multid = &rat_mult_id;
-    rat_ops.randelement = &rat_randelement;
-    initialized = 1;
-}
-

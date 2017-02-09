@@ -24,7 +24,7 @@ void rand_poly(int degree, poly_t* result) {
 
 void rand_poly_intercept(int degree, element_t* intercept, poly_t* result) {
     int i;
-    *result.coeffs[0] = *intercept;
+    *result->coeffs[0] = *intercept;
     for (i=1; i<degree+1; i++) {
            f_rand(result->coeffs[i]);
     }   

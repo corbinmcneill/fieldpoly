@@ -7,7 +7,7 @@ typedef struct rational  {
 } rat_t;
 
 typedef struct rational_element {
-    struct field_ops* field;
+    element_t super;
     rat_t contents;
 } rat_element_t;
 
