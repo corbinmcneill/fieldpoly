@@ -3,8 +3,9 @@
 
 typedef struct poly {
     int degree;
+    int element_size;
     struct field_ops* field;
-    element_t* coeffs[MAX_DEGREE+1];
+    element_t** coeffs;
 } poly_t;
 
 

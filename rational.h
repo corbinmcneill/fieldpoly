@@ -7,14 +7,16 @@ typedef struct rational  {
 } rat_t;
 
 typedef struct rational_element {
-    element_t* super;
+    struct field_ops* field;
     rat_t contents;
 } rat_element_t;
 
+
+void rat_add(element_t* a, element_t* b, element_t* result);
+void rat_mult(element_t* a, element_t* b, element_t* result);
+void rat_add_inv(element_t* a, element_t* result);
+void rat_mult_inv(element_t* a, element_t* result);
+void rat_add_id(element_t* result);
+void rat_mult_id(element_t* result);
+void rat_randelement(element_t* result);
 void rat_init(rat_element_t* a);
-void rat_mult(rat_element_t* a, rat_element_t* b, rat_element_t* result);
-void rat_add_inv(rat_element_t* a, rat_element_t* result);
-void rat_mult_inv(rat_element_t* a, rat_element_t* result);
-void rat_add_id(rat_element_t* result);
-void rat_mult_id(rat_element_t* result);
-void rat_randelement(rat_element_t* result);

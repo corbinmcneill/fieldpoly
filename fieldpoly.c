@@ -5,25 +5,30 @@
 
 void getSmallerLarger(poly_t* polya, poly_t* polyb, poly_t** larger, poly_t** smaller); 
 
-poly_t make_poly(int degree) {
-    srand(time(NULL));
-    poly_t result;
-    int i;
-    for (i=0; i<degree+1; i++) {
-        f_rand(result.coeffs[i]);
-    }   
-    return result;
+void poly_init(poly_t* polyn, int degree, int element_size, void* element_init(element_t*)) {
+    polyn->degree = degree;
+    polyn->element_size = element_size;
+    polyn->coeffs = malloc((degree+1)* element_size); 
+    for (int i = 0; i <= degree; i++) {
+        element_init(polyn->coeffs[i]);
+    }
 }
 
-poly_t make_poly_intercept(int degree, element_t* intercept) {
-    poly_t result;
+void rand_poly(int degree, poly_t* result) {
+    srand(time(NULL));
+    int i;
+    for (i=0; i<degree+1; i++) {
+        f_rand(result->coeffs[i]);
+    }   
+}
+
+void rand_poly_intercept(int degree, element_t* intercept, poly_t* result) {
     int i;
     *result.coeffs[0] = *intercept;
     for (i=1; i<degree+1; i++) {
-           f_rand(result.coeffs[i]);
+           f_rand(result->coeffs[i]);
     }   
-    result.degree = degree;
-    return result;
+    result->degree = degree;
 }
 
 element_t eval_poly(poly_t* poly, element_t* x) {
@@ -75,7 +80,7 @@ void add_polysr(poly_t *polya, poly_t *polyb, poly_t* result) {
     }
 }
 
-void mult_polys(poly_t* polya, poly_t* polyb, poly_t* result) {
+void mult_polysr(poly_t* polya, poly_t* polyb, poly_t* result) {
     result->field = polya->field;
     poly_t *larger, *smaller;
     getSmallerLarger(polya,polyb,&larger,&smaller);

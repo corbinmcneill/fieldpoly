@@ -21,3 +21,4 @@ debug.o: debug.c debug.h
 
 clean:
 	rm *.o
+	rm tests
