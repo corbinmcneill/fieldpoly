@@ -2,6 +2,9 @@
 #include "fieldpoly.h"
 #include <time.h>
 
+
+void getSmallerLarger(poly_t* polya, poly_t* polyb, poly_t** larger, poly_t** smaller); 
+
 poly_t make_poly(int degree) {
     srand(time(NULL));
     poly_t result;
@@ -31,7 +34,7 @@ element_t eval_poly(poly_t* poly, element_t* x) {
     element_t temp;
     for (int i=0; i<= poly->degree; i++) {
         temp = workingX; 
-        f_mult(&temp,&(poly->coeffs[i]));
+        f_mult(&temp,poly->coeffs[i]);
         f_add(&toReturn, &temp);
         f_mult(&workingX,x);
     }   
@@ -45,44 +48,46 @@ poly_t interpolate(element_t* x, element_t *y, int n) {
     for (int i = 0; i < n; i++) {
         a[i] = y[i];
     }   
-    element_t temp1,temp2;
+    element_t temp;
     for (int k = 1; k <= n; k++) {
         for (int j = n; j >= k; j--) { 
-            temp1 = a[j];
             f_sub(&a[j],&a[j-1]);
-            temp2 = x[j];
-            f_sub(&temp2, &x[j-k]);
-            f_div(&a[j],&temp2);
+            temp = x[j];
+            f_sub(&temp, &x[j-k]);
+            f_div(&a[j],&temp);
         }
     }   
     
     free(a);
     return toReturn;
 }
-// adds the two polynomials, caller must free the returned polynomial
-poly_t add_polys(poly_t *polya, poly_t *polyb) {
-    poly_t result;  
-    result.field = polya->field;
+
+void add_polysr(poly_t *polya, poly_t *polyb, poly_t* result) {
+    result->field = polya->field;
     poly_t *larger, *smaller;
-    if (polya->degree >= polyb->degree) {
-        larger = polya;
-        smaller = polyb;
-    } else { 
-        larger = polyb;
-        smaller = polya;
-    }
-        
+    getSmallerLarger(polya,polyb,&larger,&smaller);
     int i;
     for (i = 0; i < smaller->degree+1; i++) {
-        f_add(&polya->coeffs[i], &polyb->coeffs[i]);
+        f_addr(polya->coeffs[i], polyb->coeffs[i], result->coeffs[i]);
     }
     for (; i < larger->degree+1; i++) {
-        result.coeffs[i] = larger->coeffs[i];
+        result->coeffs[i] = larger->coeffs[i];
     }
-
-    return result;
 }
 
-// multiplies the two polynomials, caller must free the returned polynomial
-poly_t mult_polys(poly_t* polya, poly_t* polyb) {
+void mult_polys(poly_t* polya, poly_t* polyb, poly_t* result) {
+    result->field = polya->field;
+    poly_t *larger, *smaller;
+    getSmallerLarger(polya,polyb,&larger,&smaller);
+
 }
+
+void getSmallerLarger(poly_t* polya, poly_t* polyb, poly_t** larger, poly_t** smaller) {
+    if (polya->degree >= polyb->degree) {
+        *larger = polya;
+        *smaller = polyb;
+    } else { 
+        *larger = polyb;
+        *smaller = polya;
+    }
+} 

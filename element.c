@@ -14,13 +14,13 @@ void f_mult_inv(element_t* a) {
     f_mult_invr(a,a);
 }
 void f_add_id(element_t* a) {
-    f_add_idr(a,a);
+    f_add_idr(a);
 }
 void f_mult_id(element_t* a) {
-    f_mult_idr(a,a);
+    f_mult_idr(a);
 }
 void f_rand(element_t *a) {
-    f_randr(a,a);
+    f_randr(a);
 }
 
 void f_sub(element_t* a, element_t* b) {
@@ -43,14 +43,14 @@ void f_add_invr(element_t* a, element_t* result) {
 void f_mult_invr(element_t* a, element_t* result) {
    a->field->multinv(a,result); 
 }
-void f_add_idr(element_t* a, element_t* result) {
-   a->field->addid(result); 
+void f_add_idr(element_t* result) {
+   result->field->addid(result); 
 }
-void f_mult_idr(element_t* a, element_t* result) {
-   a->field->multid(result); 
+void f_mult_idr(element_t* result) {
+   result->field->multid(result); 
 }
-void f_randr(element_t* a, element_t* result) {
-    a->field->randelement(result);
+void f_randr(element_t* result) {
+    result->field->randelement(result);
 }
     
 

@@ -7,10 +7,11 @@ typedef struct rational  {
 } rat_t;
 
 typedef struct rational_element {
-    element_t super;
+    element_t* super;
     rat_t contents;
 } rat_element_t;
 
+void rat_init(rat_element_t* a);
 void rat_mult(rat_element_t* a, rat_element_t* b, rat_element_t* result);
 void rat_add_inv(rat_element_t* a, rat_element_t* result);
 void rat_mult_inv(rat_element_t* a, rat_element_t* result);

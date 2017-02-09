@@ -6,6 +6,11 @@
 
 #define MAX 100
 
+element_t rat_super;
+char initialized = 0;
+
+void field_init();
+
 void rat_add(rat_element_t* a, rat_element_t* b, rat_element_t* result) {
     assert(a->contents.denom != 0);
     assert(b->contents.denom != 0);
@@ -50,3 +55,20 @@ void rat_randelement(rat_element_t* result) {
     result->contents.denom = (rand() % MAX) +1;
 }
     
+void rat_init(rat_element_t* a) {
+    field_init();
+    a->super = &rat_super;
+}
+void field_init() {
+    if (initialized)
+        return;
+    rat_super.field->add = &rat_add;
+    rat_super.field->mult = &rat_mult;
+    rat_super.field->addinv = &rat_add_inv;
+    rat_super.field->multinv = &rat_mult_inv;
+    rat_super.field->addid = &rat_add_id;
+    rat_super.field->multid = &rat_mult_id;
+    rat_super.field->randelement = &rat_randelement;
+    initialized = 1;
+}
+
