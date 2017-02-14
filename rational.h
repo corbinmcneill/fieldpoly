@@ -1,8 +1,8 @@
+#ifndef RATIONAL_H
+#define RATIONAL_H
+
 #include <limits.h>
-#ifndef ELEMENT
-#define ELEMENT
 #include "element.h"
-#endif /* ELEMENT */
 
 typedef struct rational  {
     int num;
@@ -23,3 +23,5 @@ void rat_add_id(element_t* result);
 void rat_mult_id(element_t* result);
 void rat_randelement(element_t* result);
 void rat_init(rat_element_t* a);
+
+#endif

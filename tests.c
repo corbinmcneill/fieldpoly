@@ -4,9 +4,11 @@
 #include <assert.h>
 #include "debug.h"
 #include "rational.h"
+#include "ff256.h"
 #include "fieldpoly.h"
 
 poly_t* rpoly(); 
+void test_ff256();
 
 int main() {
     debug("testing rational elements, size: %d\n", sizeof(rat_element_t));
@@ -64,7 +66,7 @@ int main() {
     free(val);
     poly_free(testpoly1);
 
-
+	test_ff256();
 
     return 0;
 } 
@@ -86,3 +88,19 @@ poly_t* rpoly() {
     return testpoly1;
 }
     
+void test_ff256() {
+	ff256_element_t a;
+	ff256_init(&a);
+	ff256_set(6,&a);
+
+	ff256_element_t b;
+	ff256_init(&b);
+	ff256_set(21,&b);
+
+	ff256_element_t result;
+	ff256_init(&result);
+
+	ff256_mult((element_t*)(&a),(element_t*)(&b),(element_t*)&result);
+	printf("%u\n",result.contents.val);
+}
+

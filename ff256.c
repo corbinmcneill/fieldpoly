@@ -2,12 +2,15 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <stdint.h>
 #include "rational.h"
 #include "debug.h"
+#include "ff256.h"
+
 
 //precalculated multiplicative inverse table
 //for efficient lookup
-uint8_t *inverses = 
+uint8_t inverses[] = 
 	{0, 1, 141, 246, 203, 82, 123, 209, 
 	232, 79, 41, 192, 176, 225, 229, 199,
 	116, 180, 170, 75, 153, 43, 96, 95, 
@@ -42,7 +45,7 @@ uint8_t *inverses =
 	221, 156, 125, 160, 205, 26, 65, 28};
 
 int ilog2(uint16_t x) {
-  uint8_t result;
+  uint8_t result=0;
   uint8_t num;
 
   num = (!!(x>>8)) << 3;
@@ -91,6 +94,7 @@ void ff256_mult(element_t* a, element_t* b, element_t* result) {
 		Y>>=1;
 		X<<=1;
 	}
+	output->contents.val = (uint8_t) intermediate;
 }
 
 void ff256_add_inv(element_t* a, element_t* result) {
@@ -104,7 +108,7 @@ void ff256_mult_inv(element_t* a, element_t* result) {
 	ff256_element_t* x = (ff256_element_t*) a;
 	ff256_element_t* output = (ff256_element_t*) result;
 
-	output->contents.val=inverses[a->contents.val];
+	output->contents.val = inverses[x->contents.val];
 }
 
 void ff256_add_id(element_t* result) {
@@ -122,11 +126,11 @@ void ff256_randelement(element_t* result) {
 	ff256_element_t* output = (ff256_element_t*) result;
 
 	srand(time(NULL));
-	output->contents.num = (uint8_t) rand();
+	output->contents.val = (uint8_t) rand();
 }
 
 static field_ops_t ff256_ops = {
-	add = ff256_add,
+	.add = ff256_add,
     .mult = ff256_mult,
     .addinv = ff256_add_inv,
     .multinv = ff256_mult_inv,
@@ -139,4 +143,9 @@ void ff256_init(ff256_element_t* a) {
 	a->super.field = &ff256_ops;
 	a->contents.val = 0;
 	((element_t*) a)->size = sizeof(ff256_element_t);
+}
+
+void ff256_set(uint8_t a, ff256_element_t* result) {
+	ff256_element_t* output = (ff256_element_t*) result;
+	output->contents.val = a;
 }
