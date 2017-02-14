@@ -13,6 +13,9 @@ fieldpoly.o: fieldpoly.c fieldpoly.h element.h
 rational.o: rational.c rational.h element.h
 	gcc $(CFLAGS) -c rational.c
 
+primeField.o: primeField.c primeField.h element.h
+	gcc $(CFLAGS) -c primeField.c
+
 element.o: element.c element.h
 	gcc $(CFLAGS) -c element.c
 
