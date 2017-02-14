@@ -5,16 +5,17 @@
 #include "rational.h"
 #include "debug.h"
 
-#define MAX 100
+#define MAX 10
 
 char initialized = 0;
 
-void field_init();
+void initrand(); 
 
 void rat_add(element_t* a, element_t* b, element_t* result) {
 	rat_element_t* x = (rat_element_t*) a;
 	rat_element_t* y = (rat_element_t*) b;
 	rat_element_t* output = (rat_element_t*) result;
+    debug(" %d/%d + %d/%d = ",x->contents.num,x->contents.denom,y->contents.num,y->contents.denom );
     assert(x->contents.denom != 0);
     assert(y->contents.denom != 0);
     if (x->contents.num == 0) {
@@ -27,6 +28,7 @@ void rat_add(element_t* a, element_t* b, element_t* result) {
         output->contents.num = (x->contents.num * y->contents.denom) + (y->contents.num * x->contents.denom);
         output->contents.denom = x->contents.denom * y->contents.denom;
     }
+    debug(" %d/%d\n", output->contents.num,output->contents.denom );
 }
 void rat_mult(element_t* a, element_t* b, element_t* result) {
 	rat_element_t* x = (rat_element_t*) a;
@@ -62,11 +64,19 @@ void rat_mult_id(element_t* result) {
     output->contents.denom = 1;
 }
 void rat_randelement(element_t* result) {
+    initrand();
+    debug("entering rat randelement\n");
 	rat_element_t* output = (rat_element_t*) result;
-    srand(time(NULL));
     output->contents.num = rand() % MAX;
     output->contents.denom = (rand() % MAX) +1;
+    debug("exiting rat randelement\n");
 }
+void initrand() {
+    if (!initialized)
+        srand(time(NULL));
+    initialized = 1;
+}
+
 
 static field_ops_t rat_ops = {
     .add = rat_add,
@@ -82,4 +92,5 @@ void rat_init(rat_element_t* a) {
     a->super.field = &rat_ops;
     a->contents.num = 0;
     a->contents.denom = 1;
+    ((element_t*) a)->size = sizeof(rat_element_t);
 }

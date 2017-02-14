@@ -1,4 +1,6 @@
+#include "string.h"
 #include "element.h"
+#include "debug.h"
 
 
 void f_add(element_t* a, element_t* b) {
@@ -21,6 +23,7 @@ void f_mult_id(element_t* a) {
 }
 void f_rand(element_t *a) {
     f_randr(a);
+    debug("exiting rand\n");
 }
 
 void f_sub(element_t* a, element_t* b) {
@@ -51,6 +54,7 @@ void f_mult_idr(element_t* result) {
 }
 void f_randr(element_t* result) {
     result->field->randelement(result);
+    debug("exiting randr\n");
 }
     
 
@@ -65,3 +69,13 @@ void f_divr(element_t* a, element_t* b, element_t* result) {
    f_mult_invr(b,&invb);
    f_multr(a,&invb,result); 
 }
+
+int f_sizeof(element_t* a) {
+    return a->size;
+        
+}
+
+void assign(element_t* a, element_t* b) {
+    memcpy((void*) a, (void*) b, b->size);
+}
+    

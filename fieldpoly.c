@@ -1,48 +1,74 @@
 #include <stdlib.h>
-#include "fieldpoly.h"
 #include <time.h>
+#ifndef FIELDPOLY
+#define FIELDPOLY
+#include "fieldpoly.h"
+#endif /* FIELDPOLY */
+#include "debug.h"
+#include "string.h"
 
 
 void getSmallerLarger(poly_t* polya, poly_t* polyb, poly_t** larger, poly_t** smaller); 
 
-void poly_init(poly_t* polyn, int degree, int element_size, void* element_init(element_t*)) {
+poly_t* poly_init(int degree, element_t* init_element) {
+    poly_t* polyn = malloc(sizeof(poly_t));
     polyn->degree = degree;
-    polyn->element_size = element_size;
-    polyn->coeffs = malloc((degree+1)* element_size); 
+    polyn->element_size = init_element->size;
+    polyn->coeffs = malloc(sizeof(element_t*)*(degree+1)); 
     for (int i = 0; i <= degree; i++) {
-        element_init(polyn->coeffs[i]);
+        polyn->coeffs[i] = malloc(init_element->size);
+        assign(polyn->coeffs[i],init_element);  
     }
+    return polyn;
 }
 
-void rand_poly(int degree, poly_t* result) {
-    srand(time(NULL));
+void poly_free(poly_t* polyn) {
+    for (int i = 0; i <= polyn->degree; i++){ 
+        free(polyn->coeffs[i]);
+    }
+    free(polyn->coeffs);
+    free(polyn);
+}
+
+
+
+void rand_poly(poly_t* result) {
+    debug("entering rand poly\n");
     int i;
-    for (i=0; i<degree+1; i++) {
+    for (i=0; i<= result->degree; i++) {
+        debug("randomizing coeff %d\n", i);
         f_rand(result->coeffs[i]);
+        debug("done randomizing coeff %d\n", i);
     }   
+    debug("exiting rand poly\n");
 }
 
 void rand_poly_intercept(int degree, element_t* intercept, poly_t* result) {
     int i;
-    *result->coeffs[0] = *intercept;
+    *(result->coeffs[0]) = *intercept;
     for (i=1; i<degree+1; i++) {
            f_rand(result->coeffs[i]);
     }   
     result->degree = degree;
 }
 
-element_t eval_poly(poly_t* poly, element_t* x) {
-    element_t toReturn = *x;
-    element_t workingX = *x;
-    f_mult_inv(&toReturn);    
-    f_mult_inv(&workingX);    
-    element_t temp;
+// returned pointer must be freed
+element_t* eval_poly(poly_t* poly, element_t* x) {
+    element_t* toReturn = malloc(x->size);
+    element_t* workingX = malloc(x->size);
+    assign(toReturn,x);
+    assign(workingX,x);
+    f_add_id(toReturn);    
+    f_mult_inv(workingX);    
+    element_t* temp = malloc(x->size);
     for (int i=0; i<= poly->degree; i++) {
-        temp = workingX; 
-        f_mult(&temp,poly->coeffs[i]);
-        f_add(&toReturn, &temp);
-        f_mult(&workingX,x);
+        assign(temp,workingX); 
+        f_mult(temp,poly->coeffs[i]);
+        f_add(toReturn, temp);
+        f_mult(workingX,x);
     }   
+    free(workingX);
+    free(temp);
     return toReturn;
 }
 
@@ -66,9 +92,9 @@ poly_t interpolate(element_t* x, element_t *y, int n) {
     free(a);
     return toReturn;
 }
-
-void add_polysr(poly_t *polya, poly_t *polyb, poly_t* result) {
-    result->field = polya->field;
+// returned pointer must be freed
+poly_t* add_polys(poly_t *polya, poly_t *polyb) {
+    poly_t* result = poly_init(polya->degree,polya->coeffs[0]); 
     poly_t *larger, *smaller;
     getSmallerLarger(polya,polyb,&larger,&smaller);
     int i;
@@ -78,12 +104,15 @@ void add_polysr(poly_t *polya, poly_t *polyb, poly_t* result) {
     for (; i < larger->degree+1; i++) {
         result->coeffs[i] = larger->coeffs[i];
     }
+    return result;
 }
 
-void mult_polysr(poly_t* polya, poly_t* polyb, poly_t* result) {
-    result->field = polya->field;
+// returned pointer must be freed
+poly_t* mult_polysr(poly_t* polya, poly_t* polyb) {
+    poly_t* result = poly_init(polya->degree+polyb->degree,polya->coeffs[0]); 
     poly_t *larger, *smaller;
     getSmallerLarger(polya,polyb,&larger,&smaller);
+
 
 }
 

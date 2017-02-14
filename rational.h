@@ -1,5 +1,8 @@
 #include <limits.h>
+#ifndef ELEMENT
+#define ELEMENT
 #include "element.h"
+#endif /* ELEMENT */
 
 typedef struct rational  {
     int num;

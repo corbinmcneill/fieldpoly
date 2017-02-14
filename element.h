@@ -1,6 +1,7 @@
 /* a generic element of a field */
 typedef struct element {
     struct field_ops* field;
+    int size;
 } element_t;
 
 /* a struct containing pointers to all the function that must 
@@ -14,6 +15,7 @@ typedef struct field_ops {
     void (*addid)(element_t*);
     void (*multid)(element_t*);
     void (*randelement)(element_t*);
+    element_t* (*makezero)(void);
 } field_ops_t;
 
 
@@ -61,3 +63,8 @@ void f_randr(element_t* result);
 void f_subr(element_t* a, element_t* b, element_t* result);
 // sets result = a/b
 void f_divr(element_t* a, element_t* b, element_t* result);
+
+void assign(element_t* a, element_t* b);
+
+int f_sizeof(element_t* a);
+element_t* make_zero();
