@@ -5,7 +5,7 @@ typedef struct ff256  {
 	uint8_t val;
 } ff256_t;
 
-typedef struct rational_element {
+typedef struct ff256_element {
     struct field_ops* field;
     ff256_t contents;
 } rat_element_t;

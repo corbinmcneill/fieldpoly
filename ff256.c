@@ -124,8 +124,19 @@ void ff256_randelement(element_t* result) {
 	srand(time(NULL));
 	output->contents.num = (uint8_t) rand();
 }
+
+static field_ops_t ff256_ops = {
+	add = ff256_add,
+    .mult = ff256_mult,
+    .addinv = ff256_add_inv,
+    .multinv = ff256_mult_inv,
+    .addid = ff256_add_id,
+    .multid = ff256_mult_id,
+    .randelement = ff256_randelement,
+};
  
 void ff256_init(ff256_element_t* a) {
-	a->field = &ff256_ops;
+	a->super.field = &ff256_ops;
 	a->contents.val = 0;
+	((element_t*) a)->size = sizeof(ff256_element_t);
 }
