@@ -3,9 +3,9 @@ CFLAGS= -ggdb -Wall -Wextra -std=c99
 
 all: tests
 
-tests: tests.c debug.o fieldpoly.o rational.o element.o ff256.o
+tests: tests.c debug.o fieldpoly.o rational.o primeField.o element.o ff256.o
 	gcc $(CFLAGS) -c tests.c
-	gcc $(CFLAGS) tests.o fieldpoly.o debug.o rational.o element.o ff256.o -o tests
+	gcc $(CFLAGS) tests.o fieldpoly.o primeField.o debug.o rational.o element.o ff256.o -o tests
 
 fieldpoly.o: fieldpoly.c fieldpoly.h element.h 
 	gcc $(CFLAGS) -c fieldpoly.c
