@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include "debug.h"
 
+/*
 void debug(const char* format, ...) {
     if (DEBUG) {
         va_list arguments;
@@ -11,3 +12,4 @@ void debug(const char* format, ...) {
     }
 
 }
+*/
