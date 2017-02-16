@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdlib.h>
 #include <time.h>
 #ifndef FIELDPOLY
@@ -108,12 +109,23 @@ poly_t* add_polys(poly_t *polya, poly_t *polyb) {
 }
 
 // returned pointer must be freed
-poly_t* mult_polysr(poly_t* polya, poly_t* polyb) {
-    poly_t* result = poly_init(polya->degree+polyb->degree,polya->coeffs[0]); 
+poly_t* mult_polys(poly_t* polya, poly_t* polyb) {
+    element_t* temp = malloc(polya->coeffs[0]->size);
+    assign(temp, polya->coeffs[0]);
+    f_add_id(temp);
+    int resultdegree = polya->degree+polyb->degree;
+    poly_t* result = poly_init(resultdegree,temp); 
     poly_t *larger, *smaller;
     getSmallerLarger(polya,polyb,&larger,&smaller);
-
-
+    
+    for (int i = 0; i <= larger->degree; i++) {
+       for (int j = 0; j <= smaller->degree; j++) {
+          f_multr(larger->coeffs[i], smaller->coeffs[j], temp); 
+          f_add(result->coeffs[i+j],temp);
+       }
+    }
+    free(temp);
+    return result;
 }
 
 void getSmallerLarger(poly_t* polya, poly_t* polyb, poly_t** larger, poly_t** smaller) {

@@ -16,4 +16,4 @@ void rand_poly(poly_t* result);
 element_t* eval_poly(poly_t* poly, element_t* x);
 poly_t make_poly_intercept(int degree, element_t* intercept);
 poly_t* add_polys(poly_t* polya, poly_t* polyb);
-void mult_polys(poly_t* polya, poly_t* polyb, poly_t* result);
+poly_t* mult_polys(poly_t* polya, poly_t* polyb);

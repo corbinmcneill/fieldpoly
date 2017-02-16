@@ -15,7 +15,7 @@ void rat_add(element_t* a, element_t* b, element_t* result) {
 	rat_element_t* x = (rat_element_t*) a;
 	rat_element_t* y = (rat_element_t*) b;
 	rat_element_t* output = (rat_element_t*) result;
-    debug(" %d/%d + %d/%d = ",x->contents.num,x->contents.denom,y->contents.num,y->contents.denom );
+    assert(x != NULL && y != NULL);
     assert(x->contents.denom != 0);
     assert(y->contents.denom != 0);
     if (x->contents.num == 0) {
@@ -28,12 +28,12 @@ void rat_add(element_t* a, element_t* b, element_t* result) {
         output->contents.num = (x->contents.num * y->contents.denom) + (y->contents.num * x->contents.denom);
         output->contents.denom = x->contents.denom * y->contents.denom;
     }
-    debug(" %d/%d\n", output->contents.num,output->contents.denom );
 }
 void rat_mult(element_t* a, element_t* b, element_t* result) {
 	rat_element_t* x = (rat_element_t*) a;
 	rat_element_t* y = (rat_element_t*) b;
 	rat_element_t* output = (rat_element_t*) result;
+    assert(x != NULL && y != NULL);
     assert(x->contents.denom != 0);
     assert(y->contents.denom != 0);
     output->contents.num = x->contents.num * y->contents.num;
@@ -65,11 +65,9 @@ void rat_mult_id(element_t* result) {
 }
 void rat_randelement(element_t* result) {
     initrand();
-    debug("entering rat randelement\n");
 	rat_element_t* output = (rat_element_t*) result;
     output->contents.num = rand() % MAX;
-    output->contents.denom = (rand() % MAX) +1;
-    debug("exiting rat randelement\n");
+    output->contents.denom = 1;//(rand() % MAX) +1;
 }
 void initrand() {
     if (!initialized)

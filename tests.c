@@ -59,9 +59,35 @@ int main() {
         r = ((rat_element_t*) addresult->coeffs[i])->contents;
         debug(" %d/%d + %d/%d = %d/%d\n",a1.num,a1.denom,a2.num, a2.denom, r.num,r.denom);
     }
+
+
+    poly_t* multpoly1 = rpoly();
+    poly_t* multpoly2 = rpoly();
+    debug("multiplying\n");
+    poly_t* multresult = mult_polys(multpoly1, multpoly2);
+
+    rat_t m1,m2,mr;
+    for (int i = 0; i <= multpoly1->degree; i++) {
+        m1 = ((rat_element_t*) multpoly1->coeffs[i])->contents;
+        debug(" +%d/%dx^%d ",m1.num,m1.denom,i);
+    }
+    debug("\n");
+    
+    for (int i = 0; i <= multpoly2->degree; i++) {
+        m2 = ((rat_element_t*) multpoly2->coeffs[i])->contents;
+        debug(" +%d/%dx^%d ",m2.num,m2.denom,i);
+    }
+    debug("\n");
+    
+    for (int i = 0; i <= multresult->degree; i++) {
+        mr = ((rat_element_t*) multresult->coeffs[i])->contents;
+        debug(" +%d/%dx^%d ",mr.num,mr.denom,i);
+    }
+    debug("\n");
     
 
-    free(val);
+
+    free(eval_element);
     poly_free(testpoly1);
 
 
@@ -85,4 +111,4 @@ poly_t* rpoly() {
     }
     return testpoly1;
 }
-    
+
