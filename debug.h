@@ -1,4 +1,6 @@
 #include <stdio.h>
+#define DEBUG_H
+
 
 #define DEBUG 1
 /* debug functions identically to printf except that it only prints if 

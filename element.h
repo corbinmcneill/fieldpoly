@@ -1,3 +1,6 @@
+#ifndef ELEMENT_H
+#define ELEMENT_H
+
 /* a generic element of a field */
 typedef struct element {
     struct field_ops* field;
@@ -68,3 +71,5 @@ void assign(element_t* a, element_t* b);
 
 int f_sizeof(element_t* a);
 element_t* make_zero();
+
+#endif
