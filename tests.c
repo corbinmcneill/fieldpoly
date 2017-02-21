@@ -11,28 +11,23 @@ poly_t* rpoly();
 void test_ff256();
 
 int main() {
-    debug("testing rational elements, size: %d\n", sizeof(rat_element_t));
-    rat_element_t testelement; 
+    debug("testing rational elements, size: %ld\n", sizeof(rat_element_t));
+    rat_element_t* testelement = malloc(sizeof(rat_element_t)); 
     debug("created\n");
-    rat_init(&testelement);
+    rat_init(testelement);
     debug("initialized\n");
-    f_rand(&testelement.super);
+    f_rand((element_t*) testelement);
     debug("\nand set the rational to a random number\n");
-    debug("numerator: %d, denominator: %d\n", testelement.contents.num, testelement.contents.denom);
+    debug("numerator: %d, denominator: %d\n", testelement->contents.num, testelement->contents.denom);
 
-    rat_element_t init_element;
-    rat_init(&init_element);
+
+    rat_element_t* init_element = malloc(sizeof(rat_element_t));
+    rat_init(init_element);
     debug("\ncreating a random polynomial\n");
     debug("allocated space for polynomial\n");
-    poly_t* testpoly1 = poly_init(3, (element_t*) &init_element);
-    debug("ensuring elements have been initialized to 0\n");
-    for (int i = 0; i<= 3; i++) {
-        debug("coeff %d: %d\n", i, ((rat_element_t*) testpoly1->coeffs[i])->contents.num); 
-        assert(((rat_element_t*) testpoly1->coeffs[i])->contents.num == 0);
-    }
+    poly_t* testpoly1 = rand_poly(3, (element_t*) init_element);
     debug("created polynomial\n");
     debug("fill polynomial with random numbers\n");
-    rand_poly(testpoly1);
     debug("poly was filled with random numbers\n");
     rat_element_t* thing;
     for (int i = 0; i <= testpoly1->degree; i++) {
@@ -40,7 +35,7 @@ int main() {
         debug("coeff #%d: %d/%d \n", i, thing->contents.num, thing->contents.denom); 
     }
     rat_element_t* eval_element = malloc(sizeof(rat_element_t));
-    assign((element_t*) eval_element, (element_t*) &testelement);
+    assign((element_t*) eval_element, (element_t*) testelement);
     eval_element->contents.num = 0;
     eval_element->contents.denom = 1;
     rat_element_t* val = (rat_element_t*) eval_poly(testpoly1, (element_t*) eval_element); 
@@ -86,9 +81,30 @@ int main() {
         debug(" +%d/%dx^%d ",mr.num,mr.denom,i);
     }
     debug("\n");
-    
 
-
+    rat_element_t* x[4]; 
+    rat_element_t* y[4];
+    rat_element_t* tempinterp;  
+    poly_t* interppoly;
+    for (int i = 0; i < 4; i++) {
+        x[i] = malloc(sizeof(rat_element_t));
+        y[i] = malloc(sizeof(rat_element_t));
+        rat_init(x[i]);
+        x[i]->contents.num = i;
+        x[i]->contents.denom = 1;
+        tempinterp = (rat_element_t*) eval_poly(multresult, (element_t*) x[i]);
+        assign((element_t*) y[i], (element_t*) tempinterp);
+        free(tempinterp);
+    }
+    debug("beginning interpolation\n");
+    interppoly = interpolate((element_t**) x, (element_t**) y,4);
+    debug("interpolated polynomial: \n");
+    for (int i = 0; i <= interppoly->degree; i++) {
+        mr = ((rat_element_t*) interppoly->coeffs[i])->contents;
+        debug(" +%d/%dx^%d ",mr.num,mr.denom,i);
+    }
+    free(testelement);
+    free(init_element);
     free(eval_element);
     poly_free(testpoly1);
 
@@ -98,35 +114,31 @@ int main() {
 } 
 
 poly_t* rpoly() {
-    rat_element_t init_element;
-    rat_init(&init_element);
-    poly_t* testpoly1 = poly_init(3, (element_t*) &init_element);
-    for (int i = 0; i<= 3; i++) {
-        debug("coeff %d: %d\n", i, ((rat_element_t*) testpoly1->coeffs[i])->contents.num); 
-        assert(((rat_element_t*) testpoly1->coeffs[i])->contents.num == 0);
-    }
-    rand_poly(testpoly1);
+    rat_element_t* init_element = malloc(sizeof(rat_element_t));
+    rat_init(init_element);
+    poly_t* testpoly1 = rand_poly(3, (element_t*) init_element);
     rat_element_t* thing;
     for (int i = 0; i <= testpoly1->degree; i++) {
         thing = ((rat_element_t*) testpoly1->coeffs[i] );
         debug("coeff #%d: %d/%d \n", i, thing->contents.num, thing->contents.denom); 
     }
+    free(init_element);
     return testpoly1;
 }
     
 void test_ff256() {
-	ff256_element_t a;
-	ff256_init(&a);
-	ff256_set(6,&a);
+	ff256_element_t* a = malloc(sizeof(ff256_element_t));
+	ff256_init(a);
+	ff256_set(6,a);
 
-	ff256_element_t b;
-	ff256_init(&b);
-	ff256_set(21,&b);
+	ff256_element_t* b = malloc(sizeof(ff256_element_t));
+	ff256_init(b);
+	ff256_set(21,b);
 
-	ff256_element_t result;
-	ff256_init(&result);
+	ff256_element_t* result = malloc(sizeof(ff256_element_t));
+	ff256_init(result);
 
-	ff256_mult((element_t*)(&a),(element_t*)(&b),(element_t*)&result);
-	printf("%u\n",result.contents.val);
+	ff256_mult((element_t*)(a),(element_t*)(b),(element_t*)result);
+	printf("%u\n",result->contents.val);
 }
 

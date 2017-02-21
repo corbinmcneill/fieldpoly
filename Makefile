@@ -1,4 +1,4 @@
-CFLAGS= -ggdb -Wall -Wextra -std=c99
+CFLAGS= -ggdb -Wall -Wextra -std=c99 
 
 
 all: tests

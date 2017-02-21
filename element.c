@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "string.h"
 #include "element.h"
 #include "debug.h"
@@ -23,7 +24,6 @@ void f_mult_id(element_t* a) {
 }
 void f_rand(element_t *a) {
     f_randr(a);
-    debug("exiting rand\n");
 }
 
 void f_sub(element_t* a, element_t* b) {
@@ -54,20 +54,23 @@ void f_mult_idr(element_t* result) {
 }
 void f_randr(element_t* result) {
     result->field->randelement(result);
-    debug("exiting randr\n");
 }
     
 
 
 void f_subr(element_t* a, element_t* b, element_t* result) {
-   element_t invb;
-   f_add_invr(b,&invb);
-   f_addr(a,&invb,result); 
+   element_t* invb = malloc(sizeof(element_t));
+   assign(invb, b);
+   f_add_invr(b,invb);
+   f_addr(a,invb,result); 
+   free(invb);
 }
 void f_divr(element_t* a, element_t* b, element_t* result) {
-   element_t invb;
-   f_mult_invr(b,&invb);
-   f_multr(a,&invb,result); 
+   element_t* invb = malloc(sizeof(element_t));
+   assign(invb, b);
+   f_mult_invr(b,invb);
+   f_multr(a,invb,result); 
+   free(invb);
 }
 
 int f_sizeof(element_t* a) {
@@ -76,6 +79,7 @@ int f_sizeof(element_t* a) {
 }
 
 void assign(element_t* a, element_t* b) {
+    printf("size: %d\n", b->size);
     memcpy((void*) a, (void*) b, b->size);
 }
     
