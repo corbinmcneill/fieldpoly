@@ -59,14 +59,14 @@ void f_randr(element_t* result) {
 
 
 void f_subr(element_t* a, element_t* b, element_t* result) {
-   element_t* invb = malloc(sizeof(element_t));
+   element_t* invb = malloc(a->size);
    assign(invb, b);
    f_add_invr(b,invb);
    f_addr(a,invb,result); 
    free(invb);
 }
 void f_divr(element_t* a, element_t* b, element_t* result) {
-   element_t* invb = malloc(sizeof(element_t));
+   element_t* invb = malloc(a->size);
    assign(invb, b);
    f_mult_invr(b,invb);
    f_multr(a,invb,result); 
@@ -79,7 +79,6 @@ int f_sizeof(element_t* a) {
 }
 
 void assign(element_t* a, element_t* b) {
-    printf("size: %d\n", b->size);
     memcpy((void*) a, (void*) b, b->size);
 }
     

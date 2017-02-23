@@ -7,7 +7,7 @@
 #endif /* FIELDPOLY */
 #include "debug.h"
 #include "string.h"
-
+#include "rational.h"
 
 void getSmallerLarger(poly_t* polya, poly_t* polyb, poly_t** larger, poly_t** smaller); 
 
@@ -73,11 +73,13 @@ element_t* eval_poly(poly_t* poly, element_t* x) {
 
 // must free return 
 poly_t* interpolate(element_t** x, element_t** y, int arraysize) {
-    debug("start of interpolate function\n");
+    for (int i = 0; i < arraysize; i++) {
+        debug("(%d/%d,%d/%d)\n", ((rat_element_t*) x[i])->contents.num, ((rat_element_t*) x[i])->contents.denom, ((rat_element_t*) y[i])->contents.num, ((rat_element_t*) y[i])->contents.denom);
+    }
     poly_t* result = malloc(sizeof(poly_t));
     int elementsize = x[0]->size;
     int n = arraysize-1;
-    int degree = n -1;
+    int degree = arraysize -1;
     element_t** a = malloc((n+1)*sizeof(element_t*));
     for (int i = 0; i < n+1; i++) {
         a[i] = malloc(elementsize);
@@ -85,20 +87,14 @@ poly_t* interpolate(element_t** x, element_t** y, int arraysize) {
     }   
     element_t* temp = malloc(elementsize);
     assign(temp, x[0]);
-    debug("calculating a values\n");
     for (int k = 1; k <= n; k++) {
         for (int j = n; j >= k; j--) { 
-            debug("before first subtraction: k=%d, j=%d\n",k,j);
             f_sub(a[j], a[j-1]);
-            debug("after first subtraction\n");
             assign(temp, x[j]);
-            debug("before second subtraction\n");
             f_sub(temp, x[j-k]); 
-            debug("after second subtraction\n");
             f_div(a[j], temp);
         }
     }   
-    debug("done calculating a values\n");
     poly_t* polys[degree+1];
     poly_t* mid_polys[degree+1];
     poly_t* temp_polys[degree+1];
@@ -124,6 +120,9 @@ poly_t* interpolate(element_t** x, element_t** y, int arraysize) {
         }
         scale(mid_polys[i], a[i]);
     }
+    for (int i = 0; i <= degree; i++) {
+        temp_polys[i] = malloc(sizeof(poly_t));
+    }
     deepcopy(temp_polys[0], mid_polys[0]);
     for (int i = 0; i < degree; i++) {
         temp_polys[i+1] = add_polys(temp_polys[i], mid_polys[i+1]);
@@ -139,9 +138,9 @@ poly_t* interpolate(element_t** x, element_t** y, int arraysize) {
 
 // returned pointer must be freed
 poly_t* add_polys(poly_t *polya, poly_t *polyb) {
-    poly_t* result = poly_init(polya->degree,polya->coeffs[0]); 
     poly_t *larger, *smaller;
     getSmallerLarger(polya,polyb,&larger,&smaller);
+    poly_t* result = poly_init(larger->degree,larger->coeffs[0]); 
     int i;
     for (i = 0; i < smaller->degree+1; i++) {
         f_addr(polya->coeffs[i], polyb->coeffs[i], result->coeffs[i]);
@@ -196,7 +195,7 @@ void deepcopy(poly_t* polya, poly_t* polyb) {
     int elementsize = polyb->coeffs[0]->size;
     polya->degree = polyb->degree;
     polya->coeffs = malloc(sizeof(element_t*)*(polyb->degree+1));
-    for (int i = 0; i <= polya->degree; i++) {
+    for (int i = 0; i <= polyb->degree; i++) {
         debug("i=%d\n", i);
         assert(polyb->coeffs[i] != NULL);
         polya->coeffs[i] = malloc(elementsize);

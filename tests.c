@@ -47,8 +47,8 @@ int main() {
     val = (rat_element_t*) eval_poly(testpoly1, (element_t*) eval_element); 
     debug("evaluated poly @ x = 1, got %d/%d\n", val->contents.num, val->contents.denom);
 
-    poly_t* addpoly1 = rpoly();
-    poly_t* addpoly2 = rpoly();
+    poly_t* addpoly1 = rpoly(3);
+    poly_t* addpoly2 = rpoly(3);
     poly_t* addresult = add_polys(addpoly1, addpoly2);
 
     rat_t a1,a2,r;
@@ -60,8 +60,8 @@ int main() {
     }
 
 
-    poly_t* multpoly1 = rpoly();
-    poly_t* multpoly2 = rpoly();
+    poly_t* multpoly1 = rpoly(3);
+    poly_t* multpoly2 = rpoly(3);
     debug("multiplying\n");
     poly_t* multresult = mult_polys(multpoly1, multpoly2);
 
@@ -87,6 +87,7 @@ int main() {
     rat_element_t* x[4]; 
     rat_element_t* y[4];
     rat_element_t* tempinterp;  
+    poly_t* ogpoly = rpoly(3);
     poly_t* interppoly;
     for (int i = 0; i < 4; i++) {
         x[i] = malloc(sizeof(rat_element_t));
@@ -94,35 +95,41 @@ int main() {
         rat_init(x[i]);
         x[i]->contents.num = i;
         x[i]->contents.denom = 1;
-        tempinterp = (rat_element_t*) eval_poly(multresult, (element_t*) x[i]);
+        tempinterp = (rat_element_t*) eval_poly(ogpoly, (element_t*) x[i]);
         assign((element_t*) y[i], (element_t*) tempinterp);
         free(tempinterp);
     }
+    debug("\noriginal polynomial: \n");
+    for (int i = 0; i <= ogpoly->degree; i++) {
+        mr = ((rat_element_t*) ogpoly->coeffs[i])->contents;
+        debug(" +%d/%dx^%d ",mr.num,mr.denom,i);
+    }
     debug("beginning interpolation\n");
     interppoly = interpolate((element_t**) x, (element_t**) y,4);
-    debug("interpolated polynomial: \n");
+    debug("\ninterpolated polynomial: \n");
     for (int i = 0; i <= interppoly->degree; i++) {
         mr = ((rat_element_t*) interppoly->coeffs[i])->contents;
         debug(" +%d/%dx^%d ",mr.num,mr.denom,i);
     }
+    debug("\n");
     free(testelement);
     free(init_element);
     free(eval_element);
     poly_free(testpoly1);
 
-	test_ff256();
+	//test_ff256();
 
     printf("Testing primeField: \n");
 
-    test_primeField();
+    //test_primeField();
 
     return 0;
 } 
 
-poly_t* rpoly() {
+poly_t* rpoly(int degree) {
     rat_element_t* init_element = malloc(sizeof(rat_element_t));
     rat_init(init_element);
-    poly_t* testpoly1 = rand_poly(3, (element_t*) init_element);
+    poly_t* testpoly1 = rand_poly(degree, (element_t*) init_element);
     rat_element_t* thing;
     for (int i = 0; i <= testpoly1->degree; i++) {
         thing = ((rat_element_t*) testpoly1->coeffs[i] );

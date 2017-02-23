@@ -7,6 +7,7 @@
 
 #define MAX 10
 
+// intenionally broken for testing
 char initialized = 0;
 
 void initrand(); 
