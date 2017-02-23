@@ -65,20 +65,20 @@ int ilog2(uint16_t x) {
 }
 
 void ff256_add(element_t* a, element_t* b, element_t* result) {
-	ff256_element_t* x = (ff256_element_t*) a;
-	ff256_element_t* y = (ff256_element_t*) b;
-	ff256_element_t* output = (ff256_element_t*) result;
+	ff256_t* x = (ff256_t*) a;
+	ff256_t* y = (ff256_t*) b;
+	ff256_t* output = (ff256_t*) result;
 
-	output->contents.val = (x->contents.val) ^ (y->contents.val);
+	output->val = (x->val) ^ (y->val);
 }
 
 void ff256_mult(element_t* a, element_t* b, element_t* result) {
-	ff256_element_t* x = (ff256_element_t*) a;
-	ff256_element_t* y = (ff256_element_t*) b;
-	ff256_element_t* output = (ff256_element_t*) result;
+	ff256_t* x = (ff256_t*) a;
+	ff256_t* y = (ff256_t*) b;
+	ff256_t* output = (ff256_t*) result;
 
-	uint16_t X = (uint16_t) x->contents.val;
-	uint16_t Y = (uint16_t) y->contents.val;
+	uint16_t X = (uint16_t) x->val;
+	uint16_t Y = (uint16_t) y->val;
 
 	uint16_t upperMask = 0xFF00;
 	uint16_t intermediate = 0;
@@ -94,39 +94,39 @@ void ff256_mult(element_t* a, element_t* b, element_t* result) {
 		Y>>=1;
 		X<<=1;
 	}
-	output->contents.val = (uint8_t) intermediate;
+	output->val = (uint8_t) intermediate;
 }
 
 void ff256_add_inv(element_t* a, element_t* result) {
-	ff256_element_t* x = (ff256_element_t*) a;
-	ff256_element_t* output = (ff256_element_t*) result;
+	ff256_t* x = (ff256_t*) a;
+	ff256_t* output = (ff256_t*) result;
 
-	output->contents.val = ~(x->contents.val);
+	output->val = ~(x->val);
 }
 
 void ff256_mult_inv(element_t* a, element_t* result) {
-	ff256_element_t* x = (ff256_element_t*) a;
-	ff256_element_t* output = (ff256_element_t*) result;
+	ff256_t* x = (ff256_t*) a;
+	ff256_t* output = (ff256_t*) result;
 
-	output->contents.val = inverses[x->contents.val];
+	output->val = inverses[x->val];
 }
 
 void ff256_add_id(element_t* result) {
-	ff256_element_t* output = (ff256_element_t*) result;
-	output->contents.val = 0;
+	ff256_t* output = (ff256_t*) result;
+	output->val = 0;
 }
 
 void ff256_mult_id(element_t* result) {
-	ff256_element_t* output = (ff256_element_t*) result;
+	ff256_t* output = (ff256_t*) result;
 
-	output->contents.val = 1;
+	output->val = 1;
 }
 
 void ff256_randelement(element_t* result) {
-	ff256_element_t* output = (ff256_element_t*) result;
+	ff256_t* output = (ff256_t*) result;
 
 	srand(time(NULL));
-	output->contents.val = (uint8_t) rand();
+	output->val = (uint8_t) rand();
 }
 
 static field_ops_t ff256_ops = {
@@ -139,13 +139,15 @@ static field_ops_t ff256_ops = {
     .randelement = ff256_randelement,
 };
  
-void ff256_init(ff256_element_t* a) {
+void ff256_init(ff256_t* a) {
 	a->super.field = &ff256_ops;
-	a->contents.val = 0;
-	((element_t*) a)->size = sizeof(ff256_element_t);
+	a->val = 0;
+	((element_t*) a)->size = sizeof(ff256_t);
 }
 
-void ff256_set(uint8_t a, ff256_element_t* result) {
-	ff256_element_t* output = (ff256_element_t*) result;
-	output->contents.val = a;
+//only used for testing, not accessible when ff256 is
+//being used as an element_t
+void ff256_set(uint8_t a, ff256_t* result) {
+	ff256_t* output = (ff256_t*) result;
+	output->val = a;
 }
