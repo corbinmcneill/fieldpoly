@@ -7,8 +7,7 @@
 typedef struct rational  {
     int num;
     int denom;
-} rat_t;
-
+} rat_t; 
 typedef struct rational_element {
     element_t super;
     rat_t contents;

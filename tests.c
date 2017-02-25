@@ -11,8 +11,14 @@
 poly_t* rpoly(); 
 void test_ff256();
 void test_primeField();
+int test();
 
 int main() {
+    test();
+    return 0;
+}
+
+int test() {
     debug("testing rational elements, size: %ld\n", sizeof(rat_element_t));
     rat_element_t* testelement = malloc(sizeof(rat_element_t)); 
     debug("created\n");
@@ -42,10 +48,12 @@ int main() {
     eval_element->contents.denom = 1;
     rat_element_t* val = (rat_element_t*) eval_poly(testpoly1, (element_t*) eval_element); 
     debug("evaluated poly @ x = 0, got %d/%d\n", val->contents.num, val->contents.denom);
+    free(val);
     eval_element->contents.num = 1;
     eval_element->contents.denom = 1;
     val = (rat_element_t*) eval_poly(testpoly1, (element_t*) eval_element); 
     debug("evaluated poly @ x = 1, got %d/%d\n", val->contents.num, val->contents.denom);
+    free(val);
 
     poly_t* addpoly1 = rpoly(3);
     poly_t* addpoly2 = rpoly(3);
@@ -115,11 +123,11 @@ int main() {
     free(testelement);
     free(init_element);
     free(eval_element);
-    poly_free(testpoly1);
-
+    poly_free(interppoly);
+    poly_free(testpoly1); 
 	//test_ff256();
 
-    printf("Testing primeField: \n");
+//    printf("Testing primeField: \n");
 
     //test_primeField();
 
