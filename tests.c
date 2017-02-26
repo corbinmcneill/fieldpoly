@@ -147,21 +147,6 @@ poly_t* rpoly(int degree) {
     return testpoly1;
 }
     
-void test_ff256() {
-	ff256_element_t* a = malloc(sizeof(ff256_element_t));
-	ff256_init(a);
-	ff256_set(6,a);
-
-	ff256_element_t* b = malloc(sizeof(ff256_element_t));
-	ff256_init(b);
-	ff256_set(21,b);
-
-	ff256_element_t* result = malloc(sizeof(ff256_element_t));
-	ff256_init(result);
-
-	ff256_mult((element_t*)(a),(element_t*)(b),(element_t*)result);
-	printf("%u\n",result->contents.val);
-}
 
 void test_primeField() {
     gf257_element_t a;
