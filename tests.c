@@ -124,7 +124,19 @@ int test() {
     free(init_element);
     free(eval_element);
     poly_free(interppoly);
+    poly_free(addpoly1);
+    poly_free(addpoly2);
+    poly_free(addresult);
+    poly_free(multpoly1);
+    poly_free(multpoly2);
+    poly_free(multresult);
     poly_free(testpoly1); 
+    poly_free(ogpoly); 
+    for (int i = 0; i < 4; i++) {
+        free(x[i]);
+        free(y[i]);
+    }
+    
 	//test_ff256();
 
 //    printf("Testing primeField: \n");

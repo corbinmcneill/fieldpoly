@@ -18,6 +18,6 @@ poly_t* add_polys(poly_t* polya, poly_t* polyb);
 poly_t* mult_polys(poly_t* polya, poly_t* polyb);
 poly_t* interpolate(element_t** x, element_t** y, int n);
 void scale(poly_t* a, element_t* scalar);
-void deepcopy(poly_t* polya, poly_t* polyb);
+void deepcopy(poly_t** polya, poly_t* polyb);
 
 #endif

@@ -76,7 +76,7 @@ poly_t* interpolate(element_t** x, element_t** y, int arraysize) {
     for (int i = 0; i < arraysize; i++) {
         debug("(%d/%d,%d/%d)\n", ((rat_element_t*) x[i])->contents.num, ((rat_element_t*) x[i])->contents.denom, ((rat_element_t*) y[i])->contents.num, ((rat_element_t*) y[i])->contents.denom);
     }
-    poly_t* result = malloc(sizeof(poly_t));
+    poly_t* result = NULL; 
     int elementsize = x[0]->size;
     int n = arraysize-1;
     int degree = arraysize -1;
@@ -98,10 +98,6 @@ poly_t* interpolate(element_t** x, element_t** y, int arraysize) {
     poly_t* polys[degree+1];
     poly_t* mid_polys[degree+1];
     poly_t* temp_polys[degree+1];
-    for (int i = 0; i <= degree; i++) {
-        mid_polys[i] = malloc(sizeof(poly_t));
-        temp_polys[i] = malloc(sizeof(poly_t));
-    }
     f_mult_id(temp);
     polys[0] = poly_init(0, temp); 
     for (int i = 1; i <= degree; i++){
@@ -109,26 +105,28 @@ poly_t* interpolate(element_t** x, element_t** y, int arraysize) {
         f_add_invr(x[i-1], polys[i]->coeffs[0]);
     }
     for (int i = 0; i <= degree; i++) {
-        deepcopy(temp_polys[i],polys[i]);
+        deepcopy(&temp_polys[i],polys[i]);
         for (int j = i-1; j >= 0; j--) {
             temp_polys[j] = mult_polys(temp_polys[j+1], polys[j]);
         }
-        deepcopy(mid_polys[i],temp_polys[0]);
-        for (int j = i-1; j >= 0; j--) {
+        deepcopy(&mid_polys[i],temp_polys[0]);
+        for (int j = i; j >= 0; j--) {
             poly_free(temp_polys[j]);
         }
         scale(mid_polys[i], a[i]);
     }
-    temp_polys[0] = malloc(sizeof(poly_t));
-    deepcopy(temp_polys[0], mid_polys[0]);
+    deepcopy(&temp_polys[0], mid_polys[0]);
     for (int i = 0; i < degree; i++) {
         temp_polys[i+1] = add_polys(temp_polys[i], mid_polys[i+1]);
     }
-    deepcopy(result, temp_polys[degree]);
+    deepcopy(&result, temp_polys[degree]);
     for (int f = 0; f <= degree; f++) {
         poly_free(temp_polys[f]);
         poly_free(mid_polys[f]);
         poly_free(polys[f]);
+    }
+    for (int i = 0; i < n+1; i++) {
+        free(a[i]);
     }
     free(a);
     free(temp);
@@ -145,7 +143,7 @@ poly_t* add_polys(poly_t *polya, poly_t *polyb) {
         f_addr(polya->coeffs[i], polyb->coeffs[i], result->coeffs[i]);
     }
     for (; i < larger->degree+1; i++) {
-        result->coeffs[i] = larger->coeffs[i];
+        assign(result->coeffs[i],larger->coeffs[i]);
     }
     return result;
 }
@@ -190,14 +188,16 @@ void getSmallerLarger(poly_t* polya, poly_t* polyb, poly_t** larger, poly_t** sm
 } 
 
 // initializes polya 
-void deepcopy(poly_t* polya, poly_t* polyb) {
+void deepcopy(poly_t** polya, poly_t* polyb) {
+    *polya = malloc(sizeof(poly_t));
     int elementsize = polyb->coeffs[0]->size;
-    polya->degree = polyb->degree;
-    polya->coeffs = malloc(sizeof(element_t*)*(polyb->degree+1));
+    int degree = polyb->degree;
+    (*polya)->degree = degree;
+    (*polya)->coeffs = malloc(sizeof(element_t*)*(polyb->degree+1));
     for (int i = 0; i <= polyb->degree; i++) {
         debug("i=%d\n", i);
         assert(polyb->coeffs[i] != NULL);
-        polya->coeffs[i] = malloc(elementsize);
-        assign(polya->coeffs[i],polyb->coeffs[i]);
+        (*polya)->coeffs[i] = malloc(elementsize);
+        assign((*polya)->coeffs[i],polyb->coeffs[i]);
     }
 }
