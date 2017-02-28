@@ -7,7 +7,6 @@
 #endif /* FIELDPOLY */
 #include "debug.h"
 #include "string.h"
-#include "rational.h"
 
 void getSmallerLarger(poly_t* polya, poly_t* polyb, poly_t** larger, poly_t** smaller); 
 
@@ -73,9 +72,6 @@ element_t* eval_poly(poly_t* poly, element_t* x) {
 
 // must free return 
 poly_t* interpolate(element_t** x, element_t** y, int arraysize) {
-    for (int i = 0; i < arraysize; i++) {
-        debug("(%d/%d,%d/%d)\n", ((rat_element_t*) x[i])->contents.num, ((rat_element_t*) x[i])->contents.denom, ((rat_element_t*) y[i])->contents.num, ((rat_element_t*) y[i])->contents.denom);
-    }
     poly_t* result = NULL; 
     int elementsize = x[0]->size;
     int n = arraysize-1;
