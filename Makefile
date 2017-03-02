@@ -26,5 +26,5 @@ debug.o: debug.c debug.h
 	gcc $(CFLAGS) -c debug.c
 
 clean:
-	rm *.o
-	rm tests
+	rm -f *.o
+	rm -f tests
