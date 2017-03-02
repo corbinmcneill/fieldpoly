@@ -110,7 +110,7 @@ void ff256_add_inv(element_t* a, element_t* result) {
 	ff256_t* x = (ff256_t*) a;
 	ff256_t* output = (ff256_t*) result;
 
-	output->val = ~(x->val);
+	output->val = (x->val);
 }
 
 void ff256_mult_inv(element_t* a, element_t* result) {
