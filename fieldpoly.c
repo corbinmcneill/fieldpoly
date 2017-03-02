@@ -191,7 +191,6 @@ void deepcopy(poly_t** polya, poly_t* polyb) {
     (*polya)->degree = degree;
     (*polya)->coeffs = malloc(sizeof(element_t*)*(polyb->degree+1));
     for (int i = 0; i <= polyb->degree; i++) {
-        debug("i=%d\n", i);
         assert(polyb->coeffs[i] != NULL);
         (*polya)->coeffs[i] = malloc(elementsize);
         assign((*polya)->coeffs[i],polyb->coeffs[i]);
