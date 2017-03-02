@@ -7,6 +7,15 @@
 #include "debug.h"
 #include "ff256.h"
 
+int rand_initialized = 0;
+
+int getRandom() {
+	if (!rand_initialized) {
+		srand(time(NULL));
+		rand_initialized = 1;
+	}
+	return rand();
+}
 
 //precalculated multiplicative inverse table
 //for efficient lookup
@@ -125,8 +134,7 @@ void ff256_mult_id(element_t* result) {
 void ff256_randelement(element_t* result) {
 	ff256_t* output = (ff256_t*) result;
 
-	srand(time(NULL));
-	output->val = (uint8_t) rand();
+	output->val = (uint8_t) getRandom();
 }
 
 static field_ops_t ff256_ops = {
