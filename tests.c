@@ -15,7 +15,7 @@ int test();
 
 int main() {
     
-    for (int i = 0; i < 1000000; i++)
+    //for (int i = 0; i < 1000000; i++)
         test();
     return 0;
 }
@@ -130,6 +130,44 @@ int test() {
         mr = ((rat_element_t*) interppoly->coeffs[i])->contents;
         debug(" +%d/%dx^%d ",mr.num,mr.denom,i);
     }
+    debug("\n\nTesting ff256 interpolation: \n");
+    ff256_t* ffx[3];
+    ff256_t* ffy[3];
+    ff256_t* fzero = malloc(sizeof(ff256_t));
+    ff256_init(fzero);
+    poly_t* ogffpoly = poly_init(2, fzero);
+    ((ff256_t*)ogffpoly->coeffs[0])->val = 58;
+    ((ff256_t*)ogffpoly->coeffs[1])->val = 139;
+    ((ff256_t*)ogffpoly->coeffs[2])->val = 42;
+
+    debug("points:\n");
+    for (int i = 0; i < 3; i++) {
+        ffx[i] = malloc(sizeof(ff256_t));
+        ffy[i] = malloc(sizeof(ff256_t));
+        ff256_init(ffx[i]);
+        ffx[i]->val = i+1;
+        ff256_t* fftempinterp = (ff256_t*) eval_poly(ogffpoly, (element_t*) ffx[i]);
+        assign((element_t*) ffy[i], (element_t*) fftempinterp);
+        debug("(%d,%d)\n", ffx[i]->val,ffy[i]->val);
+        free(fftempinterp);
+    }   
+    debug("ogpoly: \n");
+    for (int i = 0; i < 3; i++ ) {
+        debug("%d, ", ((ff256_t*) ogffpoly->coeffs[i])->val);
+    }
+    poly_t* interpffpoly = interpolate((element_t**) ffx, (element_t**) ffy,3);
+    debug("\n\ninterpffpoly: \n");
+    for (int i = 0; i < 3; i++ ) {
+        debug("%d, ", ((ff256_t*) (interpffpoly->coeffs[i]))->val);
+    }
+
+
+
+
+
+
+
+
     debug("\n");
     free(testelement);
     free(init_element);

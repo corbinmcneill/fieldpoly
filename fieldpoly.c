@@ -57,7 +57,7 @@ element_t* eval_poly(poly_t* poly, element_t* x) {
     assign(toReturn,x);
     assign(workingX,x);
     f_add_id(toReturn);    
-    f_mult_inv(workingX);    
+    f_mult_id(workingX);    
     element_t* temp = malloc(x->size);
     for (int i=0; i<= poly->degree; i++) {
         assign(temp,workingX); 
