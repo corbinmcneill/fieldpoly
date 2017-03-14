@@ -18,6 +18,7 @@ typedef struct field_ops {
     void (*addid)(element_t*);
     void (*multid)(element_t*);
     void (*randelement)(element_t*);
+    //TODO remove 
     element_t* (*makezero)(void);
 } field_ops_t;
 

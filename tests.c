@@ -15,25 +15,26 @@ int test();
 
 int main() {
     
-    //for (int i = 0; i < 1000000; i++)
+    for (int i = 0; i < 1000000; i++)
         test();
     return 0;
 }
 
 int test() {
-    debug("Rational elements test\n\n\n");
-    debug("\tsize of rational element: %ld\n", sizeof(rat_element_t));
+    debug("A. Rational elements test\n\n\n");
+    debug("\t1.Creating a rational element\n\n");
+    debug("\t\tsize of rational element: %ld\n", sizeof(rat_element_t));
     rat_element_t* testelement = malloc(sizeof(rat_element_t)); 
-    debug("\tcreated element\n");
+    debug("\t\tcreated element\n");
     rat_init(testelement);
-    debug("\tinitialized element \n");
+    debug("\t\tinitialized element \n");
     f_rand((element_t*) testelement);
-    debug("\tset the rational to a random number\n");
-    debug("\tnumerator: %d, denominator: %d\n", testelement->contents.num, testelement->contents.denom);
+    debug("\t\tset the rational to a random number\n");
+    debug("\t\tnumerator: %d, denominator: %d\n", testelement->contents.num, testelement->contents.denom);
     debug("\n\n\n");
 
 
-    debug("Polynomial tests\n\n\n");
+    debug("B. Polynomial tests\n\n\n");
     debug("\t1. Create random polynomial \n\n");
     rat_element_t* init_element = malloc(sizeof(rat_element_t));
     rat_init(init_element);
@@ -73,7 +74,7 @@ int test() {
         debug("\t\t%d/%d + %d/%d = %d/%d\n",a1.num,a1.denom,a2.num, a2.denom, r.num,r.denom);
     }
 
-    debug("\n\t4. Multiplying x + y = z, where x and y are random polynomials\n\n");
+    debug("\n\t4. Multiplying x * y = z, where x and y are random polynomials\n\n");
     poly_t* multpoly1 = rpoly(3,'x',2);
     poly_t* multpoly2 = rpoly(3,'y',2);
     poly_t* multresult = mult_polys(multpoly1, multpoly2);
