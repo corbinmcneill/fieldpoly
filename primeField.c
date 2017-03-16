@@ -59,6 +59,7 @@ void gf257_init(gf257_element_t* a) {
     field_init();
     a->super.field = &gf257_ops;
     a->contents = 0;
+    a->super.size = sizeof(gf257_element_t);
 }
 
 void gf257_set(int a, gf257_element_t* result){
@@ -69,7 +70,7 @@ void gf257_set(int a, gf257_element_t* result){
 void field_init() {
     if (initialized)
         return;
-    srand(time(NULL));
+    //srand(time(NULL));
     gf257_ops.add = &gf257_add;
     gf257_ops.mult = &gf257_mult;
     gf257_ops.addinv = &gf257_add_inv;
