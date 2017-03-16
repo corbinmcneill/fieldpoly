@@ -25,6 +25,11 @@ element.o: element.c element.h
 debug.o: debug.c debug.h 
 	gcc $(CFLAGS) -c debug.c
 
+ff256demo: ff256demo.c ff256.o
+	gcc $(CFLAGS) -c ff256demo.c
+	gcc $(CFLAGS) ff256demo.o ff256.o -o ff256demo
+
 clean:
-	rm *.o
-	rm tests
+	rm -f *.o
+	rm -f tests
+	rm -f ff256demo
