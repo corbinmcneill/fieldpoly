@@ -21,7 +21,6 @@ void ff256_mult_id(element_t* result);
 void ff256_randelement(element_t* result);
 void ff256_init(ff256_t* a);
 
-
 // additional ff256 methods
 void ff256_set(uint8_t val, ff256_t* result);
 

@@ -57,7 +57,7 @@ element_t* eval_poly(poly_t* poly, element_t* x) {
     assign(toReturn,x);
     assign(workingX,x);
     f_add_id(toReturn);    
-    f_mult_inv(workingX);    
+    f_mult_id(workingX);    
     element_t* temp = malloc(x->size);
     for (int i=0; i<= poly->degree; i++) {
         assign(temp,workingX); 
@@ -191,7 +191,6 @@ void deepcopy(poly_t** polya, poly_t* polyb) {
     (*polya)->degree = degree;
     (*polya)->coeffs = malloc(sizeof(element_t*)*(polyb->degree+1));
     for (int i = 0; i <= polyb->degree; i++) {
-        debug("i=%d\n", i);
         assert(polyb->coeffs[i] != NULL);
         (*polya)->coeffs[i] = malloc(elementsize);
         assign((*polya)->coeffs[i],polyb->coeffs[i]);
