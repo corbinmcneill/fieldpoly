@@ -7,6 +7,10 @@ tests: tests.c debug.o fieldpoly.o rational.o primeField.o element.o ff256.o
 	gcc $(CFLAGS) -c tests.c
 	gcc $(CFLAGS) tests.o fieldpoly.o primeField.o debug.o rational.o element.o ff256.o -o tests
 
+interpTest: interpTest.c fieldpoly.o primeField.o element.o rational.o ff256.o
+	gcc $(CFLAGS) -c interpTest.c
+	gcc $(CFLAGS) interpTest.o fieldpoly.o primeField.o element.o rational.o ff256.o -o interpTest
+
 fieldpoly.o: fieldpoly.c fieldpoly.h element.h 
 	gcc $(CFLAGS) -c fieldpoly.c
 
